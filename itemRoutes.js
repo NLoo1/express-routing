@@ -39,7 +39,6 @@ router.get('/:name', (req, res, next) => {
 router.patch('/:name', (req,res,next) => {
     try{
         // Neither name nor price
-        if(!req.body.name && !req.body.price) throw new ExpressError('No name or price specified.', 400)
         
         // Look for item based on either name or price
         const item = ITEMS.find(c => c.name == req.params.name)
@@ -47,6 +46,8 @@ router.patch('/:name', (req,res,next) => {
         // if undefined throw error
         if(item === undefined) throw new ExpressError("cannot find item", 404)
         
+        if((!req.body.name) && (!req.body.price)) throw new ExpressError('No name or price specified.', 400)
+
         if(req.body.name){
             item.name = req.body.name
         }  
@@ -63,7 +64,7 @@ router.patch('/:name', (req,res,next) => {
 router.delete("/:name", function (req, res, next) {
     try {
         const index = ITEMS.findIndex(c => c.name === req.params.name);
-        if(index === -1) throw new ExpressError('Item not found', 400);
+        if(index === -1) throw new ExpressError('Item not found', 404);
         ITEMS.splice(index, 1);
         return res.json({message: "Deleted"});
     } catch (e) {
